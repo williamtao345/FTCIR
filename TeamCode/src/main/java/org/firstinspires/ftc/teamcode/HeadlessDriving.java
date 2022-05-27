@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * R Trigger:   extend slide
  */
 
-@TeleOp(name = "Do Not Click Me", group = "---")
+@TeleOp(name = "GoDrive", group = "---")
 public class HeadlessDriving extends LinearOpMode {
     private double tranSpeed = 0.5;
     private double headSpeed = 0.4;
@@ -75,6 +75,7 @@ public class HeadlessDriving extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
+        start();
         waitForStart();
 
         while (opModeIsActive()) {
