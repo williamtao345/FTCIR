@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * R Trigger:   extend slide
  */
 
-@TeleOp(name = "HeadlessDriving", group = "---")
+@TeleOp(name = "Do Not Click Me", group = "---")
 public class HeadlessDriving extends LinearOpMode {
     private double tranSpeed = 0.5;
     private double headSpeed = 0.4;
