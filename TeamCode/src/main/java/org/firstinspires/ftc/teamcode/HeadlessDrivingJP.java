@@ -24,8 +24,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * R Trigger:   extend slide
  */
 
-@TeleOp(name = "GoDrive", group = "---")
-public class HeadlessDriving extends LinearOpMode {
+@TeleOp(name = "GoDrive (Japanese)", group = "---")
+public class HeadlessDrivingJP extends LinearOpMode {
     private double tranSpeed = 0.5;
     private double headSpeed = 0.4;
     private double headlessForwardHeading = 0;
@@ -40,11 +40,12 @@ public class HeadlessDriving extends LinearOpMode {
 
     BNO055IMU imu;
 
-    PIDController hPid = new PIDController(0, 0, 0);
-    double p = 0;
-    double i = 0;
-    double d = 0;
+    double p = 0.96;
+    double i = 0.03;
+    double d = 0.2;
+    double t = 0.02;
     double pidTargetHeading = 0;
+    PIDController hPid = new PIDController(p, i, d);
     private boolean isDriverControlling = false;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -61,6 +62,26 @@ public class HeadlessDriving extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        initializeDrive();
+
+        start();
+        waitForStart();
+
+        while (opModeIsActive()) {
+            detectGamePad();
+            printDriveInfo();
+
+            telemetry.addLine();
+
+            displayCurrentPidSelection();
+
+            telemetry.addData("TargetHead", pidTargetHeading);
+            telemetry.addData("FakePidHead", getFakePidHeading());
+            telemetry.update();
+        }
+    }
+
+    public void initializeDrive(){
         lfMotor = hardwareMap.get(DcMotor.class, "lf");
         rfMotor = hardwareMap.get(DcMotor.class, "rf");
         lbMotor = hardwareMap.get(DcMotor.class, "lb");
@@ -75,39 +96,29 @@ public class HeadlessDriving extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-        start();
-        waitForStart();
+        hPid = new PIDController(p, i, d);
+        hPid.setTolerance(t);
+    }
 
-        while (opModeIsActive()) {
-            detectGamePad();
+    public void printDriveInfo(){
+        if (isNormalMode) {
+            telemetry.addData("Mode", "Normal");
+        } else {
+            telemetry.addData("Mode", "Sport");
+        }
 
-            //Print
-            if (isNormalMode) {
-                telemetry.addData("Mode", "Normal");
-            } else {
-                telemetry.addData("Mode", "Sport");
-            }
+        if (isHeadless) {
+            headlessDriveRobot();
+            telemetry.addData("Headless", "ACTIVE");
+        } else {
+            normalDriveRobot();
+            telemetry.addData("Headless", "OFF");
+        }
 
-            if (isHeadless) {
-                headlessDriveRobot();
-                telemetry.addData("Headless", "ACTIVE");
-            } else {
-                normalDriveRobot();
-                telemetry.addData("Headless", "OFF");
-            }
-
-            if (usingPidHeadingControl) {
-                telemetry.addData("Heading Control Assist", "ACTIVE");
-            } else {
-                telemetry.addData("Heading Control Assist", "OFF");
-            }
-            telemetry.addLine();
-
-            displayCurrentPidSelection();
-
-            telemetry.addData("TargetHead", pidTargetHeading);
-            telemetry.addData("FakePidHead", getFakePidHeading());
-            telemetry.update();
+        if (usingPidHeadingControl) {
+            telemetry.addData("Heading Control Assist", "ACTIVE");
+        } else {
+            telemetry.addData("Heading Control Assist", "OFF");
         }
     }
 
@@ -269,14 +280,14 @@ public class HeadlessDriving extends LinearOpMode {
 
         if (gamepad1.dpad_left && !isPressingDpadLeft) {
             isPressingDpadLeft = true;
-            currentPidSelection = (currentPidSelection + 2) % 3;
+            currentPidSelection = (currentPidSelection + 3) % 4;
         } else if (!gamepad1.dpad_left && isPressingDpadLeft) {
             isPressingDpadLeft = false;
         }
 
         if (gamepad1.dpad_right && !isPressingDpadRight) {
             isPressingDpadRight = true;
-            currentPidSelection = (currentPidSelection + 1) % 3;
+            currentPidSelection = (currentPidSelection + 1) % 4;
         } else if (!gamepad1.dpad_right && isPressingDpadRight) {
             isPressingDpadRight = false;
         }
@@ -285,14 +296,17 @@ public class HeadlessDriving extends LinearOpMode {
     public void displayCurrentPidSelection() {
         String temp;
         switch (currentPidSelection) {
-            case 1:
+            case 0:
                 temp = "P";
                 break;
-            case 2:
+            case 1:
                 temp = "I";
                 break;
-            default:
+            case 2:
                 temp = "D";
+                break;
+            default:
+                temp = "T";
                 break;
         }
 
@@ -300,23 +314,27 @@ public class HeadlessDriving extends LinearOpMode {
         telemetry.addData("P", p);
         telemetry.addData("I", i);
         telemetry.addData("D", d);
+        telemetry.addData("T", t);
     }
 
     public void changeValueOfCurrentPidSelection(double offset) {
         switch (currentPidSelection) {
-            case 1:
+            case 0:
                 p += offset;
                 break;
-            case 2:
+            case 1:
                 i += offset;
                 break;
-            default:
+            case 2:
                 d += offset;
+                break;
+            default:
+                t += offset;
                 break;
         }
 
         hPid = new PIDController(p, i, d);
-        hPid.setSetPoint(pidTargetHeading);
+        hPid.setTolerance(t);
     }
 
     public double getFakePidHeading() {
