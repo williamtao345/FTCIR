@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Driving;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,6 +26,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "GoDrive (Japanese)", group = "---")
 public class HeadlessDrivingJP extends LinearOpMode {
+    //TODO: PID values.
+    double p = 0.96;
+    double i = 0.03;
+    double d = 0.2;
+    double t = 0.02;
+    double pidTargetHeading = 0;
+
     private double tranSpeed = 0.5;
     private double headSpeed = 0.4;
     private double headlessForwardHeading = 0;
@@ -39,12 +46,6 @@ public class HeadlessDrivingJP extends LinearOpMode {
     private DcMotor rbMotor = null;
 
     BNO055IMU imu;
-
-    double p = 0.96;
-    double i = 0.03;
-    double d = 0.2;
-    double t = 0.02;
-    double pidTargetHeading = 0;
     PIDController hPid = new PIDController(p, i, d);
     private boolean isDriverControlling = false;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
