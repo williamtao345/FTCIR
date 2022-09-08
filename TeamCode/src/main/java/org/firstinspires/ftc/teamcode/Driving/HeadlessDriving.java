@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  */
 
 @TeleOp(name = "GoDrive (Japanese)", group = "---")
-public class HeadlessDrivingJP extends LinearOpMode {
+public class HeadlessDriving extends LinearOpMode {
     //TODO: PID values.
     double p = 0.96;
     double i = 0.03;
