@@ -25,14 +25,14 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-@TeleOp(name = "OD Tet", group = "---")
+@TeleOp(name = "OD Test", group = "---")
 public class ODTest extends LinearOpMode {
     private void print(Object o) {
         telemetry.addData("+", o);
         telemetry.update();
     }
 
-    /* private */ public void print(String fmt, Object... o) {
+    private void print(String fmt, Object... o) {
         telemetry.addData("+", fmt, o);
         telemetry.update();
     }
@@ -42,12 +42,15 @@ public class ODTest extends LinearOpMode {
         // System.loadLibrary("mouse_events");
         telemetry.setAutoClear(false);
         try {
-            var baseOptions = BaseOptions.builder().build();
-            var options = ObjectDetectorOptions.builder().setBaseOptions(baseOptions).build();
+            // var baseOptions = BaseOptions.builder().build();
+            // var options =
+            // ObjectDetectorOptions.builder().setBaseOptions(baseOptions).build();
 
             // TODO: Crash here
-            var detector = ObjectDetector.createFromFileAndOptions(hardwareMap.appContext, "UltimateGoal.tflite",
-                    options);
+            // var detector =
+            // ObjectDetector.createFromFileAndOptions(hardwareMap.appContext,
+            // "UltimateGoal.tflite",
+            // options);
 
             // var inputStream = hardwareMap.appContext.getAssets().open("image.jpg");
             // var image = TensorImage.fromBitmap(BitmapFactory.decodeStream(inputStream));
@@ -123,7 +126,7 @@ public class ODTest extends LinearOpMode {
             // }
             // });
         } catch (Exception e) {
-            var writer = new StringWriter();
+            StringWriter writer = new StringWriter();
             e.printStackTrace(new PrintWriter(writer));
             print(e);
             print(writer.toString());

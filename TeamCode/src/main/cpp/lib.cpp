@@ -2,8 +2,9 @@
 #include <fcntl.h>
 #include <jni.h>
 #include <linux/input.h>
+#include <string.h>
+#include <type_traits>
 #include <unistd.h>
-#include <utility>
 
 #define PRINTF(fmt, ...) tprintf(*env, obj, fmt, ##__VA_ARGS__)
 
@@ -51,13 +52,12 @@ JNIEXPORT void JNICALL Java_org_firstinspires_ftc_teamcode_Driving_ObjectDetecti
             break;
         } else {
             if (ev.type == EV_REL) {
-                if (ev.value == REL_X) {
+                if (ev.value == REL_X)
                     x += ev.value;
-                } else if (ev.value == REL_Y) {
+                else if (ev.value == REL_Y)
                     y += ev.value;
-                } else {
+                else
                     PRINTF("Unknown value for EV_REL: %d", ev.value);
-                }
             } else if (ev.type == EV_SYN) {
                 if (ev.value == SYN_REPORT) {
                     PRINTF("%d, %d", x, y);
