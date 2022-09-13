@@ -23,12 +23,17 @@ JNIEXPORT void JNICALL Java_org_firstinspires_ftc_teamcode_Driving_MouseTest_mou
                 LOG("Failed to open %s: %s", DEVICE, strerror(errno));
                 return nullptr;
             }
+            auto rc = ioctl(fd, EVIOCGRAB, 1);
+            if (rc < 0) {
+                LOG("Failed to grab %s: %s", DEVICE, strerror(errno));
+                return nullptr;
+            }
 
             struct sigaction act { };
             act.sa_handler = [](int) {
                 pthread_exit(nullptr);
             };
-            auto rc = sigaction(SIGUSR2, &act, nullptr); // SIGUSR1 is blocked by JVM???
+            rc = sigaction(SIGUSR2, &act, nullptr); // SIGUSR1 is blocked by JVM???
             if (rc < 0) {
                 LOG("Failed to set sigaction: %s", strerror(errno));
                 return nullptr;
@@ -36,6 +41,7 @@ JNIEXPORT void JNICALL Java_org_firstinspires_ftc_teamcode_Driving_MouseTest_mou
 
             pthread_cleanup_push([](void* fd) {
                 auto f = *static_cast<int*>(fd);
+                ioctl(f, EVIOCGRAB, 0);
                 LOG("Closing file descriptor %d", f);
                 close(f);
             },
