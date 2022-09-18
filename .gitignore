@@ -4,6 +4,8 @@
 *.ap_
 *.aab
 
+!libs/*.aar
+
 # Files for the ART/Dalvik VM
 *.dex
 
@@ -84,5 +86,6 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
-.idea
-.DS_STORE
+.idea/
+.vscode/
+.DS_Store
