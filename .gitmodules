@@ -1,0 +1,4 @@
+[submodule "librealsense"]
+	path = librealsense
+	url = https://github.com/SeekingBlues/librealsense
+	branch = master
