@@ -46,7 +46,7 @@ public class T265Test extends LinearOpMode {
         try {
             while (opModeIsActive()) {
                 Pose2d pose = odometry.getPoseMeters();
-                print("%10.3f %10.3f", pose.getX(), pose.getY());
+                print("%10.3f %10.3f (m)\n%10.3f (deg)", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
             }
         } catch (Exception e) {
             printException(e);
